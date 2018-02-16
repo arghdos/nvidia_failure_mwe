@@ -67,6 +67,8 @@ void compiler(const char* platform_check)
         }
     }
 
+    cassert(pid != NULL, "Platform not found!");
+
 
     //get the device to compile for
     cl_uint num_devices = 1; //only need one for compilation
