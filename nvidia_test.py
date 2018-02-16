@@ -19,13 +19,14 @@ import os
 
 
 def compile_and_test(header_path, lib_path, platform_name, defines='',
-                     should_fail=False, lib_name='OpenCL'):
+                     should_fail=False, lib_name='OpenCL',
+                     print_output=True):
     # define the compilation string
     compilation_template = (
         'gcc -fPIC -O3 -std=c99 -xc {defines} jacobian_kernel_main.ocl '
         'jacobian_kernel_compiler.ocl timer.ocl read_initial_conditions.ocl '
-        'ocl_errorcheck.ocl -I{header_path} -Wl,-rpath,{lib_path} -l{lib_name} -o '
-        'test.out')
+        'ocl_errorcheck.ocl -I{header_path} -Wl,-rpath,{lib_path} -L{lib_path} '
+        '-l{lib_name} -o test.out')
 
     # normalize the libpath / test for presence of the OpenCL library:
     lib_path = os.path.realpath(lib_path)
@@ -60,6 +61,15 @@ def compile_and_test(header_path, lib_path, platform_name, defines='',
                     raise Exception(str(stderr.read()))
             stdout.seek(0)
             output = stdout.read()
+            try:
+                output = output.decode()
+            except:
+                pass
+            finally:
+                output = str(output)
+
+            if print_output:
+                print(output)
         return str(output)
 
     # compile
