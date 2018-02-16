@@ -88,10 +88,12 @@ __kernel void __attribute__ ((reqd_work_group_size(64, 1, 1))) dRopi_dV(int cons
     {
       nu_fwd = nu_fwd + reac_to_spec_nu[1 + 2 * net_ind];
       nu_rev = nu_rev + reac_to_spec_nu[2 * net_ind];
-//      if (i_0 == 1988 && 64 * gid(0) + lid(0) == 867)
-//      {
-//         printf("%d\t%d\n", reac_to_spec_nu[1 + 2 * net_ind], reac_to_spec_nu[2 * net_ind]);
-//      }
+      #ifdef PRINT
+        if (i_0 == 1988 && 64 * gid(0) + lid(0) == 867)
+        {
+           printf("%d\t%d\n", reac_to_spec_nu[1 + 2 * net_ind], reac_to_spec_nu[2 * net_ind]);
+        }
+      #endif
     }
     if(64 * gid(0) + lid(0) == 867 && (i_0 == 1975 || i_0 == 1988))
     {
@@ -111,4 +113,3 @@ __kernel void __attribute__ ((reqd_work_group_size(64, 1, 1))) jacobian_kernel(i
     dRopi_dV(problem_size, phi, pres_mod, rop_fwd, rop_rev, jac, net_reac_to_spec_offsets, reac_to_spec_nu, rxn_to_spec, simple_map, rev_mask, thd_mask, jac_col_ptr);
 
 }
-

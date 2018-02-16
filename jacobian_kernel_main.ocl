@@ -750,7 +750,11 @@ void init(const char* platform_check, size_t per_run, size_t problem_size, cl_ui
     cl_int return_code;
 
     char* kernel_paths[1] = {"jacobian_kernel.bin"};
-    char* build_options = "-I. -cl-std=CL1.2";
+    #ifdef PRINT
+        char* build_options = "-I. -cl-std=CL1.2 -DPRINT";
+    #else
+        char* build_options = "-I. -cl-std=CL1.2";
+    #endif
     size_t source_sizes[1];
 
     cl_device_type device_type = CL_DEVICE_TYPE_ALL;

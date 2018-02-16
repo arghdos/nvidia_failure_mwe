@@ -22,7 +22,11 @@ void compiler(const char* platform_check)
     char* filename[1] = {"jacobian_kernel.ocl"};
     char* outname = "jacobian_kernel.bin";
 
-    char* build_options = "-I. -cl-std=CL1.2";
+    #ifdef PRINT
+        char* build_options = "-I. -cl-std=CL1.2 -DPRINT";
+    #else
+        char* build_options = "-I. -cl-std=CL1.2";
+    #endif
 
     FILE *fp;
     char* source_str[1];
