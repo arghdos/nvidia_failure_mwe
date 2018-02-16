@@ -1004,14 +1004,14 @@ int main(int argc, char* argv[])
 
     //arglist is:
     //#0 - the program name
-    //#1 - the problem size
-    //#2 - the number of cores [CPU only] or number of GPUs / accelerators [GPU only]
-    //#3 - The platform, should be "Intel" or "NVIDIA"
+    //#1 - The platform, should be "Intel" or "NVIDIA"
+    //#2 - the problem size
+    //#3 - the number of cores [CPU only] or number of GPUs / accelerators [GPU only]
     //#4 - whether to compile
 
-    size_t problem_size = atoi(argv[1]);
-    cl_uint num_devices = atoi(argv[2]);
-    const char* platform = argv[3];
+    const char* platform = argv[1];
+    size_t problem_size = atoi(argv[2]);
+    cl_uint num_devices = atoi(argv[3]);
     int compile = 1;
     if (argc >= 5)
         compile = atoi(argv[4]);

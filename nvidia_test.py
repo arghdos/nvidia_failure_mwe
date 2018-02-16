@@ -60,7 +60,7 @@ def compile_and_test(header_path, lib_path, platform_name, defines='',
                     raise Exception(str(stderr.read()))
             stdout.seek(0)
             output = stdout.read()
-        return output
+        return str(output)
 
     # compile
     run(compilation_template.split())
