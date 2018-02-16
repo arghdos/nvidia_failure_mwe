@@ -119,5 +119,15 @@ if __name__ == '__main__':
 
     args = parser.parser()
 
-    # on my system, this looks like /opt/opencl-headers/ using the headers downloaded
-    # from the [Khronos repo](https://github.com/KhronosGroup/OpenCL-Headers/tree/master/opencl12/CL) # noqa
+    # test nvidia w/o printing -- should fail
+    compile_and_test(args.header_path, args.nvidia_path, 'NVIDIA', defines='',
+                     should_fail=True)
+
+    # finally, turn on printing for NVIDIA -- should pass
+    compile_and_test(args.header_path, args.nvidia_path, 'NVIDIA', defines='PRINT',
+                     should_fail=True)
+
+    # test other OpenCL implementation -- should pass
+    compile_and_test(args.header_path, args.other_opencl_libpath,
+                     args.other_opencl_platform_name, defines='',
+                     should_fail=False)
