@@ -22,7 +22,7 @@ def compile_and_test(header_path, lib_path, platform_name, defines='',
                      should_fail=False, lib_name='OpenCL'):
     # define the compilation string
     compilation_template = (
-        'gcc -fPIC -O0 -g -std=c99 -xc {defines} jacobian_kernel_main.ocl '
+        'gcc -fPIC -O3 -std=c99 -xc {defines} jacobian_kernel_main.ocl '
         'jacobian_kernel_compiler.ocl timer.ocl read_initial_conditions.ocl '
         'ocl_errorcheck.ocl -I{header_path} -Wl,-rpath,{lib_path} -l{lib_name} -o '
         'test.out')
@@ -73,7 +73,7 @@ def compile_and_test(header_path, lib_path, platform_name, defines='',
     # The incorrect answer is '-1'
     # if we expect this call to fail (i.e., NVIDIA w/o the PRINT macro defined)
     # we use -1, else 0
-    desired = 'rxn:1988, spec:349, nu_fwd_sum:{val}, nu_rev_sum:3'
+    desired = 'rxn:1988, nu_fwd_sum:{val}, nu_rev_sum:3'
     val = -1 if should_fail else 0
     desired = desired.format(val=val)
 
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
     # finally, turn on printing for NVIDIA -- should pass
     compile_and_test(args.header_path, args.nvidia_path, 'NVIDIA', defines='PRINT',
-                     should_fail=True)
+                     should_fail=False)
 
     # test other OpenCL implementation -- should pass
     compile_and_test(args.header_path, args.other_opencl_libpath,
