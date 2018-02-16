@@ -964,7 +964,7 @@ void finalize()
 bool jacobian_kernel_init = false;
 size_t per_run_store = 0;
 cl_uint num_devices_store = 0;
-void jacobian_kernel_call(size_t problem_size, cl_uint num_devices,
+void jacobian_kernel_call(const char* platform, size_t problem_size, cl_uint num_devices,
                     double* h_phi, double* h_P_arr, double* h_jac)
 {
     size_t per_run = max_per_run < problem_size ? max_per_run : problem_size;
@@ -982,7 +982,7 @@ void jacobian_kernel_call(size_t problem_size, cl_uint num_devices,
     }
     if(!jacobian_kernel_init)
     {
-        init(per_run, problem_size, num_devices, h_phi, h_P_arr, h_jac);
+        init(platform, per_run, problem_size, num_devices, h_phi, h_P_arr, h_jac);
         jacobian_kernel_init = true;
     }
     execute_kernel(problem_size, h_phi, h_P_arr, h_jac);

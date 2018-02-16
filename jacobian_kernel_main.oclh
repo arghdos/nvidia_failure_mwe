@@ -28,9 +28,9 @@ Nicholas Curtis - 2017
 Completely cleanup the opencl kernel
 */
 void finalize(void);
-void compiler(void);
+void compiler(const char*);
 
-void jacobian_kernel_call(size_t problem_size, cl_uint num_devices,
+void jacobian_kernel_call(const char* platform, size_t problem_size, cl_uint num_devices,
                     double* h_phi, double* h_P_arr, double* h_jac);
 
 #endif
