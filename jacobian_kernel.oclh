@@ -1,0 +1,10 @@
+#ifndef JACOBIAN_KERNEL_OCLH
+#define JACOBIAN_KERNEL_OCLH
+
+#if __OPENCL_C_VERSION__ < 120
+#pragma OPENCL EXTENSION cl_khr_fp64: enable
+#endif
+
+#include "mechanism.oclh"
+__kernel void __attribute__ ((reqd_work_group_size(64, 1, 1))) jacobian_kernel(int const problem_size, __global double *__restrict__ Atroe, __global double *__restrict__ Btroe, __global double *__restrict__ Fcent, __global double *__restrict__ Fi, __global double *__restrict__ Kc, __global double const *__restrict__ P_arr, __global double *__restrict__ Pr, __global double *__restrict__ X, __global double *__restrict__ b, __global double *__restrict__ conc, __global double *__restrict__ cp, __global double *__restrict__ cp_tot, __global double *__restrict__ db, __global double *__restrict__ dcp, __global double *__restrict__ dphi, __global double *__restrict__ h, __global double *__restrict__ jac, __global double *__restrict__ kf, __global double *__restrict__ kf_fall, __global double *__restrict__ kr, __global double const *__restrict__ phi, __global double *__restrict__ pres_mod, __global double *__restrict__ rop_fwd, __global double *__restrict__ rop_net, __global double *__restrict__ rop_rev, __global double *__restrict__ thd_conc, __global double *__restrict__ wdot, __global int const *__restrict__ reac_to_spec_nu, __global int const *__restrict__ rxn_to_spec, __global double const *__restrict__ plog_params, __global double const *__restrict__ a_hi, __global double const *__restrict__ a_lo, __global int const *__restrict__ net_reac_to_spec_offsets, __global int const *__restrict__ nu_sum, __global int const *__restrict__ rev_mask, __global int const *__restrict__ simple_mask, __global int const *__restrict__ thd_mask, __global double const *__restrict__ simple_A, __global double const *__restrict__ simple_Ta, __global double const *__restrict__ simple_beta, __global int const *__restrict__ simple_map, __global int const *__restrict__ simple_rtype_0_map, __global int const *__restrict__ rev_map, __global int const *__restrict__ jac_col_ptr, __global double const *__restrict__ T_mid);
+#endif

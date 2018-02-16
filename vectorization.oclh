@@ -1,0 +1,11 @@
+#ifndef VECTORIZATION_OCLH
+#define VECTORIZATION_OCLH
+
+#if __OPENCL_C_VERSION__ < 120
+#pragma OPENCL EXTENSION cl_khr_fp64: enable
+#endif
+
+#include "mechanism.oclh"
+#define WIDE
+#define VECWIDTH (64)
+#endif

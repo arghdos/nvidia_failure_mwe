@@ -1,0 +1,110 @@
+#include "mechanism.oclh"
+#include "vectorization.oclh"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/time.h>
+
+// size of a single input buffer
+#define SINGLE (NN + 1)
+// define dummy split for unvectorized if necessary
+#ifndef SPLIT
+#define SPLIT (1)
+#endif
+// total buffer size
+#define BUFF_SIZE ((NN + 1) * SPLIT)
+
+//for sanity, the input data _must_ be in C-order
+
+void read_initial_conditions(const char* filename, unsigned int NUM,
+                             double* phi_host, double* param_host,
+                             const char order) {
+    FILE *fp = fopen (filename, "rb");
+    if (fp == NULL)
+    {
+        fprintf(stderr, "Could not open file: %s\\\n", filename);
+        exit(-1);
+    }
+
+    double buffer[BUFF_SIZE];
+    // load temperature, pressure and concentrations for all (cells)
+    for (int i = 0; i < NUM; i+=SPLIT)
+    {
+        // read line from data file
+        int count = fread(buffer, sizeof(double), BUFF_SIZE, fp);
+        if (count != (BUFF_SIZE))
+        {
+            fprintf(stderr, "File (%s) is incorrectly formatted, %d "
+                "doubles were expected but only %d were read.\\n",
+                filename, BUFF_SIZE, count);
+            exit(-1);
+        }
+
+        //fill the parameter array
+        for (int k = 0; k < SPLIT; ++k)
+        {
+            param_host[i + k] = buffer[1 + k * SINGLE];
+        }
+
+        // phi fill depends on order
+        if (order == 'C')
+        {
+            // if we have a split data array here, this corresponds to
+            // multiple initial conditions arrayed sequentially, i.e. for a state
+            // vector phi_{0,0}..phi_{i,j}..{phi_{NN, NState}}
+            // it should be arranged as:
+            //
+            // phi_{0, 0}, phi_{0, 1} ... phi_{0, SPLIT - 1}, phi_{1, 0} ...
+            //
+            // counter to the usual C-ordered layout
+            for (int k = 0; k < SPLIT; ++k)
+            {
+                //fill in temperature
+                phi_host[i * NN + k] = buffer[0 + k * SINGLE];
+                //fill in species moles
+                for (int j = 0; j < NS; j++)
+                {
+                    phi_host[i * NN + k + (j + 1) * SPLIT] = buffer[j + 2 + k * SINGLE];
+                }
+            }
+        }
+        else
+        {
+            // if we have a split data array here, this corresponds to
+            // state values from a single initial condition
+            // arrayed sequentially, i.e. for a state
+            // vector phi_{0,0}..phi_{i,j}..{phi_{NN, NState}}
+            // it should be arranged as:
+            //
+            // phi_{0, 0}, phi_{1, 0} ... phi_{SPLIT - 1, 0}, phi_{0, 1} ...
+            //
+            // counter to the usual F-ordered layout
+            for (int k = 0; k < SPLIT; ++k)
+            {
+                //fill in temperature
+                #if SPLIT > 1
+                    phi_host[(i + k) * SPLIT] = buffer[0 + k * SINGLE];
+                    //fill in species moles
+                    for (int j = 0; j < NS; j++)
+                    {
+                        // index of the split * state #
+                        int index = ((j + 1) / SPLIT) * NUM * SPLIT;
+                        // offset for state #
+                        index += (i + k) * SPLIT;
+                        // offset for index in state vector
+                        index += (j + 1) % SPLIT;
+                        phi_host[index] = buffer[j + 2 + k * SINGLE];
+                    }
+                #else
+                    phi_host[i] = buffer[0 + k * SINGLE];
+                    //fill in species moles
+                    for (int j = 0; j < NS; j++)
+                    {
+                        phi_host[(j + 1) * NUM + i] = buffer[j + 2];
+                    }
+                #endif
+            }
+        }
+
+    }
+}

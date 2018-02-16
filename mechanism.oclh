@@ -1,0 +1,11 @@
+#ifndef MECHANISM_OCLH
+#define MECHANISM_OCLH
+
+#if __OPENCL_C_VERSION__ < 120
+#pragma OPENCL EXTENSION cl_khr_fp64: enable
+#endif
+
+#define NS (360)
+#define NR (2100)
+#define NN (361)
+#endif
