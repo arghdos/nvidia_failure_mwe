@@ -73,7 +73,7 @@ Similarly, for reaction 1988:
 ```
 and the correct output:
 ```
-rxn:1988, nu_fwd_sum:0, nu_rev_sum:
+rxn:1988, nu_fwd_sum:0, nu_rev_sum:3
 ```
 
 ## Testing
